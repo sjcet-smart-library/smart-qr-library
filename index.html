@@ -1,41 +1,211 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<title>SJCET LIBRARY</title>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<style>
-body{font-family:Arial; text-align:center; background:#f0f2f5; padding:20px; position:relative;}
-body::before{
-  content:""; position:fixed; top:0; left:0; right:0; bottom:0;
-  background-image:url('logo.png'); background-repeat:no-repeat;
-  background-position:center; background-size:500px; opacity:0.15; z-index:-1;
-}
-.card{background:rgba(255,255,255,0.92); width:450px; margin:auto; padding:20px; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.2); border-top:5px solid #c00000;}
-input{width:90%; padding:10px; margin:8px; border-radius:8px; border:1px solid #ccc}
-button{padding:10px 20px; margin:5px; border:none; border-radius:8px; cursor:pointer; color:white; font-weight:bold}
-#issueBtn{background:#28a745} #returnBtn{background:#dc3545} #searchBtn{background:#007bff}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart QR Library System</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f0f2f5;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.96);
+            width: 450px;
+            max-width: 95%;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-top: 5px solid #c00000;
+            box-sizing: border-box;
+        }
+
+        .library-logo {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 10px;
+        }
+
+        h1 {
+            color: #c00000;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 22px;
+        }
+
+        h3 {
+            color: #555;
+        }
+
+        input {
+            width: 90%;
+            padding: 11px;
+            margin: 7px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        button {
+            padding: 11px 20px;
+            margin: 6px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        #issueBtn {
+            background: #28a745;
+        }
+
+        #returnBtn {
+            background: #dc3545;
+        }
+
+        #searchBtn {
+            background: #007bff;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        hr {
+            margin: 25px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+
+        #resultArea {
+            margin-top: 15px;
+            text-align: left;
+            padding: 10px;
+        }
+
+        #qrcode {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #qrText {
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
 </head>
+
 <body>
-<div class="card">
-<img src="logo.png" alt="SJCET Library Logo"
-  style="width:120px; height:120px";
- object-fit:contain;">
-<h1 style="color:#c00000;">SJCET LIBRARY</h1>
-<input type="text" id="studentName" placeholder="Student Name"><br><br>
-<input type="text" id="rollNumber" placeholder="Roll Number"><br><br>
-<input type="text" id="bookId" placeholder="Book ID"><br><br>
-<input type="text" id="bookName" placeholder="Book Name"><br><br>
-<button id="issueBtn">Issue Book</button>
-<button id="returnBtn">Return Book</button>
-<hr style="margin:20px 0">
-<h3>🔍 Search Student Data</h3>
-<input type="text" id="searchRoll" placeholder="Register No tho Search"><br><br>
-<button id="searchBtn">Search</button>
-<div id="resultArea" style="margin-top:15px; text-align:left;"></div>
-<div id="qrcode" style="margin-top:20px; display:flex; justify-content:center;"></div>
-<p id="qrText" style="text-align:center;"></p>
-</div>
-<script type="module" src="script.js"></script>
+
+    <div class="card">
+
+        <!-- LOGO -->
+        <img src="logo.png"
+             alt="SJCET Library Logo"
+             class="library-logo">
+
+        <!-- TITLE -->
+        <h1>SJCET LIBRARY</h1>
+
+        <h2>St. Johns College Of Engineering and Technology</h2>
+
+        <h3>Smart QR Library System</h3>
+
+        <hr>
+
+        <!-- STUDENT DETAILS -->
+        <input
+            type="text"
+            id="studentName"
+            placeholder="Student Name">
+
+        <br>
+
+        <input
+            type="text"
+            id="rollNumber"
+            placeholder="Register / Roll Number">
+
+        <br>
+
+        <input
+            type="text"
+            id="bookId"
+            placeholder="Book ID">
+
+        <br>
+
+        <input
+            type="text"
+            id="bookName"
+            placeholder="Book Name">
+
+        <br><br>
+
+        <!-- ISSUE / RETURN -->
+        <button id="issueBtn">
+            Issue Book
+        </button>
+
+        <button id="returnBtn">
+            Return Book
+        </button>
+
+        <hr>
+
+        <!-- SEARCH -->
+        <h3>🔍 Search Student Data</h3>
+
+        <input
+            type="text"
+            id="searchRoll"
+            placeholder="Register No tho Search">
+
+        <br>
+
+        <button id="searchBtn">
+            Search
+        </button>
+
+        <!-- SEARCH RESULT -->
+        <div id="resultArea"></div>
+
+        <hr>
+
+        <!-- QR CODE -->
+        <h3>📱 QR Code</h3>
+
+        <div id="qrcode"></div>
+
+        <p id="qrText"></p>
+
+    </div>
+
+    <!-- YOUR JAVASCRIPT -->
+    <script type="module" src="script.js"></script>
+
 </body>
+
 </html>
