@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SJCET Library - Admin Dashboard</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f0f2f5;
+    margin:0;
+    padding:15px;
+}
+
+.card{
+    background:white;
+    max-width:1000px;
+    margin:20px auto;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 5px 20px rgba(0,0,0,.12);
+}
+
+h1{
+    text-align:center;
+    color:#c40000;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    box-sizing:border-box;
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin:10px 0;
+}
+
+button{
+    background:#c40000;
+    color:white;
+    border:0;
+    padding:11px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.stats{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin:15px 0;
+}
+
+.stat{
+    flex:1;
+    min-width:120px;
+    background:#f8f9fa;
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+    border:1px solid #eee;
+}
+
+.stat span{
+    display:block;
+    font-size:24px;
+    font-weight:bold;
+    color:#c40000;
+    margin-top:5px;
+}
+
+.tableBox{
+    overflow:auto;
+    margin-top:15px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:750px;
+}
+
+th,td{
+    border:1px solid #ddd;
+    padding:9px;
+    text-align:left;
+}
+
+th{
+    background:#c40000;
+    color:white;
+}
+
+.issued{
+    color:#0066cc;
+    font-weight:bold;
+}
+
+.returned{
+    color:green;
+    font-weight:bold;
+}
+
+#message{
+    text-align:center;
+    padding:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>📚 SJCET Library Admin</h1>
+
+<div class="stats">
+    <div class="stat">
+        Total Transactions
+        <span id="total">0</span>
+    </div>
+
+    <div class="stat">
+        Issued
+        <span id="issued">0</span>
+    </div>
+
+    <div class="stat">
+        Returned
+        <span id="returned">0</span>
+    </div>
+</div>
+
+<input
+    type="text"
+    id="search"
+    placeholder="Search Student / Register No / Book ID..."
+>
+
+<button onclick="loadTransactions()">🔄 Refresh</button>
+
+<div id="message">Loading data...</div>
+
+<div class="tableBox">
+<table>
+<thead>
+<tr>
+    <th>Student Name</th>
+    <th>Register No</th>
+    <th>Book ID</th>
+    <th>Book Name</th>
+    <th>Issued Date</th>
+    <th>Returned Date</th>
+    <th>Status</th>
+</tr>
+</thead>
+
+<tbody id="tableBody"></tbody>
+
+</table>
+</div>
+
+</div>
+
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDPFx5ejMBKRVm0RP-oUVSwLRt1ik3iOWE",
+    authDomain: "smart-qr-library-system-16a90.firebaseapp.com",
+    projectId: "smart-qr-library-system-16a90",
+    storageBucket: "smart-qr-library-system-16a90.firebasestorage.app",
+    messagingSenderId: "598115614162",
+    appId: "1:598115614162:web:e417954b03cf2605571c0b"
+};
+
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let allTransactions = [];
+
+
+async function loadTransactions(){
+
+    const message = document.getElementById("message");
+
+    message.innerHTML = "Loading... ⏳";
+
+    try{
+
+        const snapshot =
+            await getDocs(collection(db,"transactions"));
+
+        allTransactions = [];
+
+        snapshot.forEach(doc => {
+
+            allTransactions.push({
+                id: doc.id,
+                ...doc.data()
+            });
+
+        });
+
+        displayTransactions(allTransactions);
+
+    }catch(error){
+
+        console.error(error);
+
+        message.innerHTML =
+            "❌ Error loading Firebase data: " +
+            error.message;
+    }
+}
+
+
+function displayTransactions(data){
+
+    const tbody =
+        document.getElementById("tableBody");
+
+    const message =
+        document.getElementById("message");
+
+    tbody.innerHTML = "";
+
+    let issuedCount = 0;
+    let returnedCount = 0;
+
+    data.forEach(item => {
+
+        if(item.status === "Issued"){
+            issuedCount++;
+        }
+
+        if(item.status === "Returned"){
+            returnedCount++;
+        }
+
+        let issuedDate =
+            item.issuedDate ?
+            formatDate(item.issuedDate) :
+            "-";
+
+        let returnedDate =
+            item.returnedDate ?
+            formatDate(item.returnedDate) :
+            "-";
+
+        let statusClass =
+            item.status === "Issued"
+            ? "issued"
+            : "returned";
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>${item.studentName || "-"}</td>
+
+            <td>${item.roll || "-"}</td>
+
+            <td>${item.bookID || "-"}</td>
+
+            <td>${item.bookName || "-"}</td>
+
+            <td>${issuedDate}</td>
+
+            <td>${returnedDate}</td>
+
+            <td class="${statusClass}">
+                ${item.status || "-"}
+            </td>
+
+        </tr>
+
+        `;
+    });
+
+
+    document.getElementById("total").textContent =
+        data.length;
+
+    document.getElementById("issued").textContent =
+        issuedCount;
+
+    document.getElementById("returned").textContent =
+        returnedCount;
+
+
+    if(data.length === 0){
+
+        message.innerHTML =
+            "No transactions found.";
+
+    }else{
+
+        message.innerHTML =
+            "✅ " + data.length +
+            " transaction(s) found.";
+    }
+}
+
+
+function formatDate(value){
+
+    try{
+
+        if(value && value.toDate){
+
+            return value.toDate().toLocaleString();
+        }
+
+        return new Date(value).toLocaleString();
+
+    }catch(e){
+
+        return "-";
+    }
+}
+
+
+document.getElementById("search")
+.addEventListener("input", function(){
+
+    const query =
+        this.value.toLowerCase().trim();
+
+    if(!query){
+
+        displayTransactions(allTransactions);
+        return;
+    }
+
+    const filtered =
+        allTransactions.filter(item =>
+
+            (item.studentName || "")
+            .toLowerCase()
+            .includes(query)
+
+            ||
+
+            (item.roll || "")
+            .toLowerCase()
+            .includes(query)
+
+            ||
+
+            (item.bookID || "")
+            .toLowerCase()
+            .includes(query)
+
+            ||
+
+            (item.bookName || "")
+            .toLowerCase()
+            .includes(query)
+
+        );
+
+    displayTransactions(filtered);
+
+});
+
+
+loadTransactions();
+
+</script>
+
+</body>
+</html>
