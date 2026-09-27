@@ -1,38 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Smart QR Library System</title>
-    <link rel ="stylesheet" href="style.css">
+<title>SJCET LIBRARY</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+body{font-family:Arial; text-align:center; background:#f0f2f5; padding:20px; position:relative;}
+body::before{
+  content:""; position:fixed; top:0; left:0; right:0; bottom:0;
+  background-image:url('logo.png'); background-repeat:no-repeat;
+  background-position:center; background-size:500px; opacity:0.15; z-index:-1;
+}
+.card{background:rgba(255,255,255,0.92); width:450px; margin:auto; padding:20px; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.2); border-top:5px solid #c00000;}
+input{width:90%; padding:10px; margin:8px; border-radius:8px; border:1px solid #ccc}
+button{padding:10px 20px; margin:5px; border:none; border-radius:8px; cursor:pointer; color:white; font-weight:bold}
+#issueBtn{background:#28a745} #returnBtn{background:#dc3545} #searchBtn{background:#007bff}
+</style>
 </head>
-
 <body>
-
-    <h1>Smart QR Library System</h1>
-    
-    <h2>St.Johns College Of Engineering and Technology</h2>
-
-    <h3>College Library</h3>
-
-    <label>Student Name:</label>
-    <input type="text" id="studentName">
-    <br><br>
-
-    <label>Roll Number:</label>
-    <input type="text" id="rollNumber">
-    <br><br>
-
-    <label>Book ID:</label>
-    <input type="text" id="bookId">
-    <br><br>
-
-    <label>Book Name:</label>
-    <input type="text" id="bookName">
-    <br><br>
-
-    <button onclick="issueBook()">Issue Book</button>
-    <button onclick="returnBook()">Return Book</button>
-
-    <script src="script.js"></script>
-
+<div class="card">
+<img src="image.png" style="width:80px;">
+<h1 style="color:#c00000;">SJCET LIBRARY</h1>
+<input type="text" id="studentName" placeholder="Student Name"><br><br>
+<input type="text" id="rollNumber" placeholder="Roll Number"><br><br>
+<input type="text" id="bookId" placeholder="Book ID"><br><br>
+<input type="text" id="bookName" placeholder="Book Name"><br><br>
+<button id="issueBtn">Issue Book</button>
+<button id="returnBtn">Return Book</button>
+<hr style="margin:20px 0">
+<h3>🔍 Search Student Data</h3>
+<input type="text" id="searchRoll" placeholder="Register No tho Search"><br><br>
+<button id="searchBtn">Search</button>
+<div id="resultArea" style="margin-top:15px; text-align:left;"></div>
+<div id="qrcode" style="margin-top:20px; display:flex; justify-content:center;"></div>
+<p id="qrText" style="text-align:center;"></p>
+</div>
+<script type="module" src="script.js"></script>
 </body>
 </html>
